@@ -1,26 +1,56 @@
 services:
+  argus_agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: argus_agent
+    ports:
+      - "8501:8501"  # Streamlit UI
+      - "8000:8000"  # Prometheus metrics
+    restart: unless-stopped
+    networks:
+      - argus_network
+
   prometheus:
     image: prom/prometheus:latest
+    container_name: prometheus
     ports:
       - "9090:9090"
     volumes:
       - ./Database/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
       - '--web.console.libraries=/etc/prometheus/console_libraries'
       - '--web.console.templates=/etc/prometheus/consoles'
     restart: unless-stopped
+    depends_on:
+      - argus_agent
+    networks:
+      - argus_network
 
   grafana:
     image: grafana/grafana:latest
+    container_name: grafana
     ports:
       - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=
     volumes:
       - grafana_data:/var/lib/grafana
+      - ./Database/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
     restart: unless-stopped
+    depends_on:
+      - prometheus
+    networks:
+      - argus_network
+
+networks:
+  argus_network:
+    driver: bridge
 
 volumes:
   grafana_data:
+  prometheus_data:

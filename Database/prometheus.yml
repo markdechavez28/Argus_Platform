@@ -1,21 +1,14 @@
 global:
-  # How often to scrape targets by default
   scrape_interval: 15s
-
-  # How often to evaluate rules (if you use recording or alerting rules)
   evaluation_interval: 15s
 
-  # Default scrape timeout. Must be <= scrape_interval (default is 10s).
-  # Uncomment and tune if scraping sometimes takes longer than 10s.
-  # scrape_timeout: 10s
-
 scrape_configs:
-  - job_name: "argus_agent"
-    # metrics_path: /metrics   # optional; /metrics is default
-
-    # Optional: override scrape_interval or scrape_timeout for this job
-    # scrape_interval: 15s
-    # scrape_timeout: 10s
-
+  - job_name: 'prometheus'
     static_configs:
-      - targets: ["localhost:8000"] # if Prometheus runs on same machine as the agent
+      - targets: ['localhost:9090']
+
+  - job_name: 'argus_agent'
+    static_configs:
+      - targets: ['argus_agent:8000']
+    scrape_interval: 15s
+    scrape_timeout: 10s

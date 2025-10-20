@@ -9,17 +9,23 @@ Argus Agent Monitoring
 
 ## Setup Instructions:
 
-### Option 1: Docker Compose (Recommended)
+### Option 1: Run start.ps1 (Recommended)
 
 ```bash
 # In VS Code terminal
-docker-compose up -d
-python Database\prometheus_exporter.py
+./start.ps1
 ```
-
+This will run all of it
+- Argus Agent UI: http://localhost:8501
+- Metrics Endpoint: http://localhost:8000/metrics
 - Prometheus: http://localhost:9090
-- Grafana: http://localhost:3000 (admin/admin)
-- Metrics: http://localhost:8000/metrics
+- Grafana: http://localhost:3000 (login: admin/admin)
+
+To Stop
+```bash
+# In VS Code terminal
+docker-compose down
+```
 
 ### Option 2: Streamlit Agent Only
 
@@ -38,4 +44,15 @@ streamlit run Agent\argus_agent.py
    Note: It should run at: http://localhost:9090
    Note: Prom's own yml should be configured
 
-P.S. Updated on Oct 10
+### Option 3: Manual Start (Docker Desktop)
+
+```bash
+# In VS Code terminal
+ docker-compose up -d --build
+```
+To Stop
+```bash
+# In VS Code terminal
+docker-compose down
+```
+P.S. Updated on Oct 20
