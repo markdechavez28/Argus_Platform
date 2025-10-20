@@ -17,8 +17,109 @@ import random
 import time
 import uuid
 import math
-from datetime import datetime
+from datetime import datetime, timedelta
+import requests
+import threading
+import logging
+import socket
 
+from prometheus_client import start_http_server, Gauge, Counter, Histogram, CollectorRegistry, generate_latest
+
+# ---------------------------
+# Basic config
+# ---------------------------
+METRICS_PORT = 8000
+INTERVAL = 15        # seconds: how often we sample metrics (same as your original)
+SLEEP_STEP = 1       # UI countdown tick
+MAX_FEED = 20
+
+# External/config keys (copied from your file; keep them or override as needed)
+tempapi_key = "19de89d0-a052-11f0-a260-0242ac130006-19de8a66-a052-11f0-a260-0242ac130006"
+latitude = 14.5995
+longitude = 120.9842
+country_code = "PH"
+zip_code = 1000
+lat = "12.8797"
+lon = "121.7740"
+api_key = "eff1f48d5f126f1208c0b00a26791796"
+precipitation_key = "37573286ba4c48ba88b02651250110"
+meteosource_key = "e3h8v06v10s3wpq437mgtw4h3k1bxl0obc74lajl"
+location = "Manila"
+end_date = datetime.now()
+
+# ---------------------------
+# Logging
+# ---------------------------
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+logger = logging.getLogger("argus_streamlit")
+
+# ---------------------------
+# Metric objects (module-level)
+# ---------------------------
+# Creating metrics at module import ensures they are registered in the default registry
+# and appear in /metrics as soon as the exporter server is running.
+
+try:
+    # Container-level gauges
+    g_container_cpu = Gauge("argus_container_cpu_util_pct", "Container CPU utilization percent",
+                            ['instance', 'host_id', 'container_id', 'container_image'])
+    g_container_memory_rss = Gauge("argus_container_memory_rss_bytes", "Container memory RSS bytes",
+                                  ['instance', 'host_id', 'container_id'])
+    g_container_network_rx = Gauge("argus_container_network_rx_bytes", "Container network rx bytes",
+                                   ['instance', 'host_id', 'container_id'])
+    g_container_uptime = Gauge("argus_container_uptime_seconds", "Container uptime seconds",
+                               ['instance', 'host_id', 'container_id'])
+
+    # VM-level gauges
+    g_vm_cpu = Gauge("argus_vm_cpu_pct", "VM CPU percent", ['instance', 'host_id'])
+    g_vm_memory_rss = Gauge("argus_vm_memory_rss_bytes", "VM memory rss bytes", ['instance', 'host_id'])
+
+    # App-level gauges + counter + histogram
+    g_app_req_rate = Gauge("argus_app_request_rate_rps", "Application request rate (rps)", ['instance', 'host_id', 'container_id'])
+    g_app_error_rate = Gauge("argus_app_error_rate_pct", "Application error rate percent", ['instance', 'host_id', 'container_id'])
+    g_app_cpu = Gauge("argus_app_cpu_util_pct", "App CPU util percent", ['instance', 'host_id', 'container_id'])
+
+    c_app_requests_total = Counter("argus_app_requests_total", "Total number of requests handled by the app", ['instance', 'host_id', 'container_id'])
+
+    h_app_latency_seconds = Histogram("argus_app_latency_seconds", "Request latency (seconds)", ['instance', 'host_id', 'container_id'],
+                                     buckets=(0.001, 0.005, 0.01, 0.02, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0))
+
+    # Orchestrator & network
+    g_orch_pod_count = Gauge("argus_orchestrator_pod_count", "Number of pods", ['instance'])
+    g_orch_api_latency_ms = Gauge("argus_orchestrator_api_latency_ms", "Cluster API latency ms", ['instance'])
+
+    g_net_throughput = Gauge("argus_network_interface_throughput_bps", "Network interface throughput bps", ['instance', 'host_id'])
+    g_net_rtt = Gauge("argus_network_rtt_ms", "Network RTT ms", ['instance', 'host_id'])
+    g_net_packet_loss = Gauge("argus_network_packet_loss_pct", "Network packet loss percent", ['instance', 'host_id'])
+except ValueError as e:
+    # This may happen if Streamlit reloads and metrics get defined twice.
+    # In that case, log and continue; the metric objects are already registered.
+    logger.warning("Metric registration warning: %s", e)
+
+# ---------------------------
+# Start the Prometheus metrics server (guarded)
+# ---------------------------
+# We try to avoid starting the server multiple times if Streamlit hot-reloads the module.
+_METRICS_SERVER_STARTED = False
+try:
+    # Quick port check: if another process is already bound to METRICS_PORT, don't start a new server.
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(0.5)
+    res = s.connect_ex(('127.0.0.1', METRICS_PORT))
+    s.close()
+    if res == 0:
+        _METRICS_SERVER_STARTED = True
+        logger.info("Metrics port %d already in use — assuming metrics server is running", METRICS_PORT)
+    else:
+        start_http_server(METRICS_PORT)
+        _METRICS_SERVER_STARTED = True
+        logger.info("Started Prometheus metrics server on port %d", METRICS_PORT)
+except Exception as e:
+    logger.exception("Failed to start Prometheus metrics server: %s", e)
+
+# ---------------------------
+# Helper formatters
+# ---------------------------
 def human_bytes(n: int) -> str:
     step_unit = 1024.0
     if n < step_unit:
