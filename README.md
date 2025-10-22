@@ -26,8 +26,21 @@ To Stop
 # In VS Code terminal
 docker-compose down
 ```
+**Note: Wait for at least 30 seconds or more after starting to load**
+### Option 2: Manual Start (Docker Desktop)
 
-### Option 2: Streamlit Agent Only
+```bash
+# In VS Code terminal
+ docker-compose up -d --build
+```
+To Stop
+```bash
+# In VS Code terminal
+docker-compose down
+```
+**Note: Wait for at least 30 seconds or more after starting to load**
+
+### Option 3: Streamlit Agent Only
 
 ```bash
 # In VS Code terminal
@@ -44,15 +57,22 @@ streamlit run Agent\argus_agent.py
    Note: It should run at: http://localhost:9090
    Note: Prom's own yml should be configured
 
-### Option 3: Manual Start (Docker Desktop)
+### To set up the dashboard in Grafana
+1. Navigate to Grafana Dashboard
+3. Click "New"
+2. import "Argus Environmental Telemetry Dashboard.json" from the github repository (filepath: \Argusplatform\Dashboards\Argus Environmental Telemetry Dashboar.json)
+4. Add UID if applicable
+5. Click Save and Open
 
-```bash
-# In VS Code terminal
- docker-compose up -d --build
-```
-To Stop
-```bash
-# In VS Code terminal
-docker-compose down
-```
+### To update the dashboard in Grafana
+1.  Copy the contents of the dashboard .json file
+2.  Go to grafana and open the 'Argus Environmental Telemetry Dashboard'
+3. Click the "Edit" button
+4. Click the "Settings" button
+5. Go to "JSON model" and paste the copied .json code
+6. Click "Save Changes"
+7. Click "go back to dashboard" to see updated file
+
+
+
 P.S. Updated on Oct 20
