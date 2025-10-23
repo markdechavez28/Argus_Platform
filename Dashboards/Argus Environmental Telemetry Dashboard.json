@@ -1588,8 +1588,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(\n  (\n    (\n      avg_over_time(argus_container_cpu_util_pct[15s]) / 100 * (65 / 1000)\n      +\n      (\n        (avg_over_time(argus_container_gpu_util_pct[15s])\n          or\n         avg_over_time(argus_container_cpu_util_pct[15s]) * 0)\n      ) / 100 * (200 / 1000)\n    )\n  ) * (15 / 3600)\n) * scalar(region_no2_emission_factor{region=\"Manila\"} or vector(0.691))",
-          "legendFormat": "CO2 Emissions (15s)",
+          "expr": "(\n  (\n    avg_over_time(argus_container_cpu_util_pct[15s]) / 100 * (65 / 1000)\n    +\n    (\n      (avg_over_time(argus_container_gpu_util_pct[15s])\n        or\n       avg_over_time(argus_container_cpu_util_pct[15s]) * 0)\n    ) / 100 * (200 / 1000)\n  )\n) * (15 / 3600) * scalar(region_no2_emission_factor{region=\"Manila\"} or vector(0.691))",
+          "legendFormat": "{{instance}} CO2 (15s)",
           "range": true,
           "refId": "A"
         }
@@ -1791,8 +1791,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "avg(\n  avg_over_time(argus_container_cpu_util_pct_zone{zone=\"urban\"}[15s])\n)\n-\navg(\n  avg_over_time(argus_container_cpu_util_pct_zone{zone=\"rural\"}[15s])\n)",
-          "legendFormat": "Urban Heat Island (15s)",
+          "expr": "(\n  avg(avg_over_time(argus_container_cpu_util_pct_zone{zone=\"urban\"}[15s]))\n  -\n  avg(avg_over_time(argus_container_cpu_util_pct_zone{zone=\"rural\"}[15s]))\n)",
+          "legendFormat": "Urban-Rural Diff (15s)",
           "range": true,
           "refId": "A"
         }
@@ -1893,8 +1893,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(\n  (\n    (\n      avg_over_time(argus_container_cpu_util_pct[15s]) / 100 * (65 / 1000)\n      +\n      (\n        (avg_over_time(argus_container_gpu_util_pct[15s])\n          or\n         avg_over_time(argus_container_cpu_util_pct[15s]) * 0)\n      ) / 100 * (200 / 1000)\n    )\n  ) * (15 / 3600)\n) * scalar(region_no2_emission_factor{region=\"Manila\"} or vector(0.691))",
-          "legendFormat": "Air Quality (15s)",
+          "expr": "(\n  (\n    avg_over_time(argus_container_cpu_util_pct[15s]) / 100 * (65 / 1000)\n    +\n    (\n      (avg_over_time(argus_container_gpu_util_pct[15s])\n        or\n       avg_over_time(argus_container_cpu_util_pct[15s]) * 0)\n    ) / 100 * (200 / 1000)\n  )\n) * (15 / 3600) * scalar(region_no2_emission_factor{region=\"Manila\"} or vector(0.691)) * 1000",
+          "legendFormat": "{{instance}} NO2 (15s)",
           "range": true,
           "refId": "A"
         }
@@ -2075,8 +2075,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(\n  (\n    (\n      avg_over_time(argus_container_cpu_util_pct[5m]) / 100 * (65 / 1000)\n      +\n      (\n        (avg_over_time(argus_container_gpu_util_pct[5m])\n          or\n         avg_over_time(argus_container_cpu_util_pct[5m]) * 0)\n      ) / 100 * (200 / 1000)\n    )\n  ) * (300 / 3600)\n) * scalar(region_no2_emission_factor{region=\"Manila\"} or vector(0.691))",
-          "legendFormat": "{{instance}} - CO2 Emissions (5m)",
+          "expr": "(\n  (\n    avg_over_time(argus_container_cpu_util_pct[5m]) / 100 * (65 / 1000)\n    +\n    (\n      (avg_over_time(argus_container_gpu_util_pct[5m])\n        or\n       avg_over_time(argus_container_cpu_util_pct[5m]) * 0)\n    ) / 100 * (200 / 1000)\n  )\n) * (300 / 3600) * scalar(region_no2_emission_factor{region=\"Manila\"} or vector(0.691))",
+          "legendFormat": "{{instance}} CO2 (5m)",
           "range": true,
           "refId": "A"
         }
@@ -2359,8 +2359,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(\n  (\n    (\n      avg_over_time(argus_container_cpu_util_pct[20m]) / 100 * (65 / 1000)\n      +\n      (\n        (avg_over_time(argus_container_gpu_util_pct[20m])\n          or\n         avg_over_time(argus_container_cpu_util_pct[20m]) * 0)\n      ) / 100 * (200 / 1000)\n    )\n  ) * (1200 / 3600)\n) * scalar(region_no2_emission_factor{region=\"Manila\"} or vector(0.691))",
-          "legendFormat": "CO2 Emissions (20m)",
+          "expr": "(\n  (\n    avg_over_time(argus_container_cpu_util_pct[20m]) / 100 * (65 / 1000)\n    +\n    (\n      (avg_over_time(argus_container_gpu_util_pct[20m])\n        or\n       avg_over_time(argus_container_cpu_util_pct[20m]) * 0)\n    ) / 100 * (200 / 1000)\n  )\n) * (1200 / 3600) * scalar(region_no2_emission_factor{region=\"Manila\"} or vector(0.691))",
+          "legendFormat": "{{instance}} CO2 (20m)",
           "range": true,
           "refId": "A"
         }
@@ -2562,8 +2562,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "avg(\n  avg_over_time(argus_container_cpu_util_pct_zone{zone=\"urban\"}[20m])\n)\n-\navg(\n  avg_over_time(argus_container_cpu_util_pct_zone{zone=\"rural\"}[20m])\n)",
-          "legendFormat": "Urban Heat Island (20m)",
+          "expr": "(\n  avg(avg_over_time(argus_container_cpu_util_pct_zone{zone=\"urban\"}[20m]))\n  -\n  avg(avg_over_time(argus_container_cpu_util_pct_zone{zone=\"rural\"}[20m]))\n)",
+          "legendFormat": "Urban-Rural Diff (20m)",
           "range": true,
           "refId": "A"
         }
@@ -2664,8 +2664,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(\n  (\n    (\n      avg_over_time(argus_container_cpu_util_pct[20m]) / 100 * (65 / 1000)\n      +\n      (\n        (avg_over_time(argus_container_gpu_util_pct[20m])\n          or\n         avg_over_time(argus_container_cpu_util_pct[20m]) * 0)\n      ) / 100 * (200 / 1000)\n    )\n  ) * (15 / 3600)\n) * scalar(region_no2_emission_factor{region=\"Manila\"} or vector(0.691))",
-          "legendFormat": "Air Quality (20m)",
+          "expr": "(\n  (\n    avg_over_time(argus_container_cpu_util_pct[20m]) / 100 * (65 / 1000)\n    +\n    (\n      (avg_over_time(argus_container_gpu_util_pct[20m])\n        or\n       avg_over_time(argus_container_cpu_util_pct[20m]) * 0)\n    ) / 100 * (200 / 1000)\n  )\n) * (1200 / 3600) * scalar(region_no2_emission_factor{region=\"Manila\"} or vector(0.691)) * 1000",
+          "legendFormat": "{{instance}} NO2 (20m)",
           "range": true,
           "refId": "A"
         }
@@ -2844,8 +2844,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(\n  (\n    (\n      avg_over_time(argus_container_cpu_util_pct[1h]) / 100 * (65 / 1000)\n      +\n      (\n        (avg_over_time(argus_container_gpu_util_pct[1h])\n          or\n         avg_over_time(argus_container_cpu_util_pct[1h]) * 0)\n      ) / 100 * (200 / 1000)\n    )\n  ) * (3600 / 3600)\n) * scalar(region_no2_emission_factor{region=\"Manila\"} or vector(0.691))",
-          "legendFormat": "CO2 Emissions (1h)",
+          "expr": "(\n  (\n    avg_over_time(argus_container_cpu_util_pct[1h]) / 100 * (65 / 1000)\n    +\n    (\n      (avg_over_time(argus_container_gpu_util_pct[1h])\n        or\n       avg_over_time(argus_container_cpu_util_pct[1h]) * 0)\n    ) / 100 * (200 / 1000)\n  )\n) * (3600 / 3600) * scalar(region_no2_emission_factor{region=\"Manila\"} or vector(0.691))",
+          "legendFormat": "{{instance}} CO2 (1h)",
           "range": true,
           "refId": "A"
         }
@@ -3047,8 +3047,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "avg(\n  avg_over_time(argus_container_cpu_util_pct_zone{zone=\"urban\"}[1h])\n)\n-\navg(\n  avg_over_time(argus_container_cpu_util_pct_zone{zone=\"rural\"}[1h])\n)",
-          "legendFormat": "Urban Heat Island (1h)",
+          "expr": "(\n  avg(avg_over_time(argus_container_cpu_util_pct_zone{zone=\"urban\"}[1h]))\n  -\n  avg(avg_over_time(argus_container_cpu_util_pct_zone{zone=\"rural\"}[1h]))\n)",
+          "legendFormat": "Urban-Rural Diff (1h)",
           "range": true,
           "refId": "A"
         }
@@ -3149,8 +3149,8 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(\n  (\n    (\n      avg_over_time(argus_container_cpu_util_pct[60m]) / 100 * (65 / 1000)\n      +\n      (\n        (avg_over_time(argus_container_gpu_util_pct[60m])\n          or\n         avg_over_time(argus_container_cpu_util_pct[60m]) * 0)\n      ) / 100 * (200 / 1000)\n    )\n  ) * (15 / 3600)\n) * scalar(region_no2_emission_factor{region=\"Manila\"} or vector(0.691))",
-          "legendFormat": "Air Quality (1h)",
+          "expr": "(\n  (\n    avg_over_time(argus_container_cpu_util_pct[1h]) / 100 * (65 / 1000)\n    +\n    (\n      (avg_over_time(argus_container_gpu_util_pct[1h])\n        or\n       avg_over_time(argus_container_cpu_util_pct[1h]) * 0)\n    ) / 100 * (200 / 1000)\n  )\n) * (3600 / 3600) * scalar(region_no2_emission_factor{region=\"Manila\"} or vector(0.691)) * 1000",
+          "legendFormat": "{{instance}} NO2 (1h)",
           "range": true,
           "refId": "A"
         }

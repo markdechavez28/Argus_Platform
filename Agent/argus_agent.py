@@ -139,7 +139,7 @@ try:
     )
 
     h_app_latency_seconds = Histogram(
-        "h_app_latency_seconds",
+        "argus_app_latency_seconds",
         "Request latency (seconds)",
         ["instance", "host_id", "container_id"],
         buckets=(0.001, 0.005, 0.01, 0.02, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0),
