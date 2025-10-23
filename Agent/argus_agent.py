@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 """
-Revised Argus Streamlit telemetry app + Prometheus exporter (merged & cleaned).
-- Exports raw metrics and event counters needed by Prometheus to compute indices
-- Does NOT compute environmental indices locally anymore (Prometheus should compute them)
-- UI updated to show region metadata and instruct that indices are computed in Prometheus
-- Generators produce stronger, correlated, and bursty randomness so Grafana dashboards look lively.
+Argus Streamlit telemetry app + Prometheus exporter.
 """
 
 import logging
@@ -14,7 +10,12 @@ import socket
 import time
 import uuid
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 import threading
+import json
+import io
+import csv
+import copy
 
 import requests
 import streamlit as st  # <-- import streamlit here and set page config immediately
@@ -22,7 +23,7 @@ import streamlit as st  # <-- import streamlit here and set page config immediat
 # Must be the first Streamlit command executed in the process.
 try:
     st.set_page_config(
-        page_title="Argus Environmental Telemetry (Revised)",
+        page_title="Argus Agent",
         layout="wide",
         initial_sidebar_state="expanded",
     )
@@ -31,6 +32,17 @@ except Exception:
     pass
 
 from prometheus_client import Counter, Gauge, Histogram, start_http_server
+
+# ---------------------------
+# Timezone helper
+# ---------------------------
+MANILA_TZ = ZoneInfo("Asia/Manila")
+
+
+def now_manila():
+    """Return current datetime in Asia/Manila timezone."""
+    return datetime.now(MANILA_TZ)
+
 
 # ---------------------------
 # Basic config
@@ -53,7 +65,7 @@ lon = "121.7740"
 api_key = "eff1f48d5f126f1208c0b00a26791796"
 precipitation_key = "37573286ba4c48ba88b02651250110"
 location = "Manila"
-end_date = datetime.now()
+end_date = now_manila()
 
 # Region metadata (keeps a small local copy to display)
 REGION_META = {
@@ -68,7 +80,7 @@ REGION_META = {
 # Logging
 # ---------------------------
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-logger = logging.getLogger("argus_streamlit_revised")
+logger = logging.getLogger("argus_streamlit")
 
 # ---------------------------
 # Module-level last-seen state for deltas & small caches
@@ -183,7 +195,7 @@ try:
     )
 
 except Exception as e:
-    logger.warning("Metric registration warning (revised): %s", e)
+    logger.warning("Metric registration warning: %s", e)
 
 # ---------------------------
 # Start Prometheus server (guarded)
@@ -303,7 +315,6 @@ def _time_phase(period_seconds=300.0):
 
 
 def generate_container_metrics():
-    now = time.time()
     phase = _time_phase(period_seconds=600.0)  # slow ~10m wave
 
     base_cpu = 30.0 + 18.0 * phase + random.gauss(0, 4.0)
@@ -333,7 +344,7 @@ def generate_container_metrics():
         network_rx += int(random.uniform(base_net * 1.0, base_net * 4.0))
 
     return {
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": now_manila().isoformat(),
         "host_id": f"host_{random.randint(1, 10)}",
         "container_id": f"container_{random.randint(1, 50)}",
         "container_image": f"image_{random.choice(['nginx', 'mysql', 'redis', 'flask'])}",
@@ -359,7 +370,6 @@ def generate_container_metrics():
 
 
 def generate_vm_metrics():
-    now = time.time()
     phase = _time_phase(period_seconds=900.0)
     base_vm_cpu = 25.0 + 20.0 * phase + random.gauss(0, 5.0)
     burst = random.random() < 0.06
@@ -369,7 +379,7 @@ def generate_vm_metrics():
     )
     host_power = max(50.0, 300.0 + vm_cpu * 20.0 + random.gauss(0, 75.0))
     return {
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": now_manila().isoformat(),
         "host_id": f"host_{random.randint(1, 10)}",
         "vm_cpu_pct": round(vm_cpu, 2),
         "cpu_seconds": round(random.uniform(0.0, 10000.0), 2),
@@ -390,7 +400,6 @@ def generate_vm_metrics():
 
 def generate_app_metrics():
     # app metrics intentionally heavy-tail and bursty
-    now = time.time()
     phase = _time_phase(period_seconds=400.0)
     base_rps = max(1.0, 60.0 + 40.0 * phase + random.gauss(0, 20.0))
     burst = random.random() < 0.07
@@ -408,7 +417,7 @@ def generate_app_metrics():
     error_rate = min(100.0, max(0.0, random.gauss(1.5, 2.5) + (random.uniform(2.0, 12.0) if burst else 0.0)))
 
     return {
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": now_manila().isoformat(),
         "host_id": f"host_{random.randint(1, 10)}",
         "container_id": f"container_{random.randint(1, 50)}",
         "request_rate_rps": round(request_rate, 2),
@@ -441,7 +450,7 @@ def generate_app_metrics():
 def generate_orchestrator_metrics():
     burst = random.random() < 0.05
     return {
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": now_manila().isoformat(),
         "node_count": random.randint(1, 20),
         "pod_count": random.randint(1, 200) + (20 if burst else 0),
         "pod_status_pending": random.randint(0, 20),
@@ -466,7 +475,7 @@ def generate_network_metrics():
         max(0, (100000 * (0.2 + 0.7 * abs(base_phase))) + random.gauss(0, 15000) + (150000 if burst else 0))
     )
     return {
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": now_manila().isoformat(),
         "host_id": f"host_{random.randint(1, 10)}",
         "interface_throughput_bps": interface_throughput,
         "network_rx_bytes": random.randint(0, 1024**3) + (interface_throughput * random.randint(0, 5)),
@@ -727,8 +736,6 @@ def update_prometheus_from_metrics(
                 pass
     except Exception:
         logger.exception("Failed to set network metrics")
-
-
 # ---------------------------
 # Background fetcher for external APIs
 # ---------------------------
@@ -762,11 +769,61 @@ def _start_background_fetch(interval_s=120):
                 st.session_state["air_quality_data"] = fetch_air_quality()
             except Exception as e:
                 logger.exception("Background air quality fetch failed: %s", e)
-            st.session_state["external_last_update"] = datetime.utcnow().isoformat() + "Z"
+            # use Manila time for the external_last_update
+            try:
+                st.session_state["external_last_update"] = now_manila().isoformat()
+            except Exception:
+                st.session_state["external_last_update"] = datetime.utcnow().isoformat() + "Z"
             time.sleep(interval_s)
 
     t = threading.Thread(target=_bg_loop, daemon=True)
     t.start()
+
+
+# ---------------------------
+# Utilities for download
+# ---------------------------
+def _flatten_snapshot(snapshot: dict) -> dict:
+    """Flatten a single snapshot into a flat dict suitable for CSV.
+    Top-level keys: emit_seq, timestamp, instance_id, and prefixed metric keys like container_cpu_util_pct
+    """
+    out = {
+        "emit_seq": snapshot.get("emit_seq"),
+        "timestamp": snapshot.get("timestamp"),
+        "instance_id": snapshot.get("instance_id"),
+    }
+    metrics = snapshot.get("metrics", {})
+    for section in ["container", "vm", "app", "orchestrator", "network"]:
+        sec = metrics.get(section, {})
+        if isinstance(sec, dict):
+            for k, v in sec.items():
+                key = f"{section}_{k}"
+                # if value is complex, json-encode it
+                if isinstance(v, (dict, list)):
+                    out[key] = json.dumps(v)
+                else:
+                    out[key] = v
+        else:
+            out[section] = json.dumps(sec)
+    return out
+
+
+def _generate_csv_bytes(history: list) -> bytes:
+    if not history:
+        return b""
+    rows = [_flatten_snapshot(s) for s in history]
+    # collect union of fieldnames
+    fieldnames = set()
+    for r in rows:
+        fieldnames.update(r.keys())
+    # ensure deterministic order: common leading fields first
+    ordered = ["emit_seq", "timestamp", "instance_id"] + sorted(k for k in fieldnames if k not in {"emit_seq", "timestamp", "instance_id"})
+    sio = io.StringIO()
+    writer = csv.DictWriter(sio, fieldnames=ordered, extrasaction="ignore")
+    writer.writeheader()
+    for r in rows:
+        writer.writerow(r)
+    return sio.getvalue().encode("utf-8")
 
 
 # ---------------------------
@@ -791,6 +848,9 @@ def main():
             "orchestrator": generate_orchestrator_metrics(),
             "network": generate_network_metrics(),
         }
+    # history of emitted snapshots for download (list of frozen dicts)
+    if "metrics_history" not in st.session_state:
+        st.session_state.metrics_history = []
 
     # populate region-level gauges for Prometheus reference
     try:
@@ -822,12 +882,12 @@ def main():
         unsafe_allow_html=True,
     )
 
-    # page header
+    # page header (clean, production-ready)
     st.markdown(
         """
     <div style='display:flex; justify-content:space-between; align-items:center; gap:12px;'>
     <div>
-    <div style='font-size:22px; font-weight:800; color:#e2e8f0;'>🛰️ Argus Environmental Telemetry — Revised</div>
+    <div style='font-size:22px; font-weight:800; color:#e2e8f0;'>Argus Environmental Telemetry</div>
     <div style='color:#94a3b8; margin-top:4px;'>Real-time simulated telemetry • Weather • Air Quality • System Metrics</div>
     </div>
     <div><div style='display:inline-block;padding:6px 10px;border-radius:12px;background:#10b981;color:white;font-weight:700;'>ACTIVE</div></div>
@@ -838,7 +898,7 @@ def main():
 
     # Sidebar content: Instance ID, Location, and countdown placeholder (next update)
     with st.sidebar:
-        st.markdown("# 🛡️ Argus Agent (Revised)")
+        st.markdown("# Argus Agent")
         st.markdown(f"**Instance ID:** {st.session_state.instance_id}")
         st.markdown("**Location:** Manila")
         st.markdown("---")
@@ -848,6 +908,31 @@ def main():
         st.markdown("---")
         show_raw = st.checkbox("Show global raw JSON", value=False)
 
+        # --- Download controls ---
+        st.markdown("---")
+        st.markdown("### Download generated telemetry")
+        st.markdown("Download the full history of emitted telemetry snapshots for this instance.")
+        dl_format = st.selectbox("Format", ["JSON", "CSV"], index=0)
+        # show message if empty
+        if len(st.session_state.metrics_history) == 0:
+            st.markdown("_No telemetry emitted yet — wait for the first update._")
+        else:
+            if dl_format == "JSON":
+                payload = json.dumps(st.session_state.metrics_history, indent=2).encode("utf-8")
+                st.download_button(
+                    "Download JSON",
+                    data=payload,
+                    file_name=f"argus_metrics_{st.session_state.instance_id}.json",
+                    mime="application/json",
+                )
+            else:
+                csv_bytes = _generate_csv_bytes(st.session_state.metrics_history)
+                st.download_button(
+                    "Download CSV",
+                    data=csv_bytes,
+                    file_name=f"argus_metrics_{st.session_state.instance_id}.csv",
+                    mime="text/csv",
+                )
     main_area = st.container()
     # left column (main cards) + right column (feed)
     left, right = main_area.columns([1.4, 1])
@@ -857,7 +942,7 @@ def main():
     app_placeholder = left.empty()
     orchestrator_placeholder = left.empty()
     network_placeholder = left.empty()
-    # region metadata in main body (left) — user asked to see it in the main body
+    # region metadata in main body (left)
     region_placeholder = left.empty()
 
     feed_box = right.empty()
@@ -890,9 +975,26 @@ def main():
                 st.session_state.last_emit = now_mon
                 st.session_state.emit_seq += 1
 
-                entry = f"🕐 {datetime.now().strftime('%H:%M:%S')} | Update #{st.session_state.emit_seq} | Generated telemetry snapshot."
+                # use Manila time for displayed/update timestamps
+                entry = f"{now_manila().strftime('%H:%M:%S')} | Update #{st.session_state.emit_seq} | Generated telemetry snapshot."
                 st.session_state.agent_log.insert(0, entry)
                 st.session_state.agent_log = st.session_state.agent_log[:MAX_FEED]
+
+                # ----- freeze and append snapshot to history for download -----
+                try:
+                    snapshot = {
+                        "emit_seq": st.session_state.emit_seq,
+                        "timestamp": now_manila().isoformat(),
+                        "instance_id": st.session_state.instance_id,
+                        "metrics": copy.deepcopy(st.session_state.last_metrics),
+                    }
+                    st.session_state.metrics_history.insert(0, snapshot)  # newest first
+                    # cap history to prevent unbounded memory growth — keep last 5000 by default
+                    MAX_HISTORY = 5000
+                    if len(st.session_state.metrics_history) > MAX_HISTORY:
+                        st.session_state.metrics_history = st.session_state.metrics_history[:MAX_HISTORY]
+                except Exception:
+                    logger.exception("Failed to record snapshot into history for download")
 
                 try:
                     update_prometheus_from_metrics(
@@ -904,11 +1006,11 @@ def main():
                         st.session_state.last_metrics["orchestrator"],
                         st.session_state.last_metrics["network"],
                     )
-                    st.session_state.agent_log.insert(0, f"📡 Prometheus metrics updated (emit #{st.session_state.emit_seq})")
+                    st.session_state.agent_log.insert(0, f"Prometheus metrics updated (emit #{st.session_state.emit_seq})")
                     st.session_state.agent_log = st.session_state.agent_log[:MAX_FEED]
                 except Exception as e:
                     logger.exception("Failed to update Prometheus metrics: %s", e)
-                    st.session_state.agent_log.insert(0, f"❌ Failed to update Prometheus metrics: {e}")
+                    st.session_state.agent_log.insert(0, f"Failed to update Prometheus metrics: {e}")
                     st.session_state.agent_log = st.session_state.agent_log[:MAX_FEED]
 
             container_metrics = st.session_state.last_metrics["container"]
@@ -920,7 +1022,7 @@ def main():
             # Container card
             with container_placeholder.container():
                 st.markdown("<div style='margin-bottom:8px;padding:12px;border-radius:12px;background:linear-gradient(135deg,#0f172a,#0c4a6e);color:#e2e8f0;'>", unsafe_allow_html=True)
-                st.markdown("<h3 style='margin:0;'>🐳 Container Infrastructure</h3>", unsafe_allow_html=True)
+                st.markdown("<h3 style='margin:0;'>Container Infrastructure</h3>", unsafe_allow_html=True)
                 st.markdown(
                     f"<div style='color:#94a3b8;font-size:13px'>{container_metrics['container_image']} • {container_metrics['container_id']} • Host: {container_metrics['host_id']}</div>",
                     unsafe_allow_html=True,
@@ -938,7 +1040,7 @@ def main():
             # VM card
             with vm_placeholder.container():
                 st.markdown("<div style='margin-top:6px;padding:12px;border-radius:12px;background:linear-gradient(135deg,#0f172a,#0c4a6e);color:#e2e8f0;'>", unsafe_allow_html=True)
-                st.markdown("<h3 style='margin:0;'>🖥️ Virtual Machine</h3>", unsafe_allow_html=True)
+                st.markdown("<h3 style='margin:0;'>Virtual Machine</h3>", unsafe_allow_html=True)
                 st.markdown(f"<div style='color:#94a3b8;font-size:13px'>Host: {vm_metrics['host_id']}</div>", unsafe_allow_html=True)
                 v1, v2, v3, v4 = st.columns([1, 1, 1, 1])
                 v1.metric("CPU %", f"{vm_metrics['vm_cpu_pct']}%")
@@ -952,7 +1054,7 @@ def main():
             # App card
             with app_placeholder.container():
                 st.markdown("<div style='margin-top:6px;padding:12px;border-radius:12px;background:linear-gradient(135deg,#0f172a,#0c4a6e);color:#e2e8f0;'>", unsafe_allow_html=True)
-                st.markdown("<h3 style='margin:0;'>📦 Application</h3>", unsafe_allow_html=True)
+                st.markdown("<h3 style='margin:0;'>Application</h3>", unsafe_allow_html=True)
                 st.markdown(f"<div style='color:#94a3b8;font-size:13px'>{app_metrics['container_id']} on {app_metrics['host_id']}</div>", unsafe_allow_html=True)
                 a1, a2, a3 = st.columns([1, 1, 1])
                 a1.metric("Req/s", f"{app_metrics['request_rate_rps']}")
@@ -965,7 +1067,7 @@ def main():
             # Orchestrator card
             with orchestrator_placeholder.container():
                 st.markdown("<div style='margin-top:6px;padding:12px;border-radius:12px;background:linear-gradient(135deg,#0f172a,#0c4a6e);color:#e2e8f0;'>", unsafe_allow_html=True)
-                st.markdown("<h3 style='margin:0;'>🗂️ Orchestrator</h3>", unsafe_allow_html=True)
+                st.markdown("<h3 style='margin:0;'>Orchestrator</h3>", unsafe_allow_html=True)
                 st.markdown(f"<div style='color:#94a3b8;font-size:13px'>Nodes: {orchestrator_metrics['node_count']}</div>", unsafe_allow_html=True)
                 o1, o2 = st.columns([1, 1])
                 o1.metric("Pods", f"{orchestrator_metrics['pod_count']}")
@@ -977,7 +1079,7 @@ def main():
             # Network card
             with network_placeholder.container():
                 st.markdown("<div style='margin-top:6px;padding:12px;border-radius:12px;background:linear-gradient(135deg,#0f172a,#0c4a6e);color:#e2e8f0;'>", unsafe_allow_html=True)
-                st.markdown("<h3 style='margin:0;'>🌐 Network</h3>", unsafe_allow_html=True)
+                st.markdown("<h3 style='margin:0;'>Network</h3>", unsafe_allow_html=True)
                 st.markdown(f"<div style='color:#94a3b8;font-size:13px'>Host: {network_metrics['host_id']}</div>", unsafe_allow_html=True)
                 n1, n2, n3 = st.columns([1, 1, 1])
                 n1.metric("Throughput bps", f"{network_metrics['interface_throughput_bps']}")
@@ -994,7 +1096,7 @@ def main():
             ext_last = st.session_state.get("external_last_update")
 
             region_placeholder.markdown("<div style='margin-top:8px;padding:12px;border-radius:12px;background:linear-gradient(135deg,#083047,#0b3f56);color:#e2e8f0;'>", unsafe_allow_html=True)
-            region_placeholder.markdown("<h3 style='margin:0 0 6px 0;'>☁️ External Data</h3>", unsafe_allow_html=True)
+            region_placeholder.markdown("<h3 style='margin:0 0 6px 0;'>External Data</h3>", unsafe_allow_html=True)
 
             # Weather summary (defensive parsing)
             weather_summary = "Not available"
@@ -1066,15 +1168,17 @@ def main():
 
             # --- Region metadata card (kept below external data) ---
             region_placeholder.markdown("<div style='margin-top:8px;padding:12px;border-radius:12px;background:linear-gradient(135deg,#07203a,#0a3850);color:#e2e8f0;'>", unsafe_allow_html=True)
-            region_placeholder.markdown("<h3 style='margin:0;'>🌍 Region metadata & Prometheus indices</h3>", unsafe_allow_html=True)
+            region_placeholder.markdown("<h3 style='margin:0;'>Region metadata & Prometheus indices</h3>", unsafe_allow_html=True)
             region_placeholder.markdown(f"**Region:** Manila")
             region_placeholder.markdown(f"WUE (region_wue): {REGION_META['Manila']['wue']}")
             region_placeholder.markdown(f"Water availability (region_water_avail): {REGION_META['Manila']['water_avail']}")
-            region_placeholder.markdown(f"NO₂ factor (region_no2_emission_factor): {REGION_META['Manila']['no2']}")
+            region_placeholder.markdown(f"NO2 factor (region_no2_emission_factor): {REGION_META['Manila']['no2']}")
             region_placeholder.markdown("<div style='margin-top:6px;color:#94a3b8;'>Indices computed in Prometheus — paste PromQL into Grafana/Prometheus.</div>", unsafe_allow_html=True)
             region_placeholder.markdown("</div>", unsafe_allow_html=True)
 
-            # Right column: only the feed (emit updates)
+            # Right column: header + the feed (emit updates)
+            # show a simple Live Feed header above the feed box
+            feed_box.markdown("<div style='font-weight:800;margin-bottom:6px;'>Live Feed</div>", unsafe_allow_html=True)
             feed_box.markdown(
                 f"<div style='padding:8px;'><div style='background:linear-gradient(135deg,#021026,#081520);padding:12px;border-radius:8px;color:#e2e8f0;min-height:200px;max-height:680px;overflow-y:auto;'><pre style='white-space:pre-wrap;margin:0;font-size:13px'>{'<br>'.join(st.session_state.agent_log)}</pre></div></div>",
                 unsafe_allow_html=True,
@@ -1082,7 +1186,7 @@ def main():
 
             # optionally show global raw JSON in sidebar
             if show_raw:
-                st.sidebar.markdown("### 📋 Latest Raw Telemetry")
+                st.sidebar.markdown("### Latest Raw Telemetry")
                 st.sidebar.json(
                     {
                         "container": container_metrics,
@@ -1096,7 +1200,7 @@ def main():
             time.sleep(SLEEP_STEP)
 
     except Exception as e:
-        err_entry = f"❌ [{datetime.now().isoformat()}] ERROR | {str(e)}"
+        err_entry = f"[{now_manila().isoformat()}] ERROR | {str(e)}"
         st.session_state.agent_log.insert(0, err_entry)
         st.session_state.agent_log = st.session_state.agent_log[:MAX_FEED]
         feed_box.markdown("<pre style='white-space:pre-wrap'>" + "\n".join(st.session_state.agent_log) + "</pre>", unsafe_allow_html=True)
