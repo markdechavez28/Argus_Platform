@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 0,
+  "id": 1,
   "links": [],
   "panels": [
     {
@@ -28,1255 +28,6 @@
         "w": 24,
         "x": 0,
         "y": 0
-      },
-      "id": 16,
-      "panels": [],
-      "title": "🐳 Container Infrastructure",
-      "type": "row"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 1
-      },
-      "id": 1,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.2.0",
-      "targets": [
-        {
-          "expr": "argus_container_cpu_util_pct",
-          "legendFormat": "{{container_id}} - {{container_image}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Container CPU Utilization",
-      "type": "timeseries"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 1
-      },
-      "id": 2,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.2.0",
-      "targets": [
-        {
-          "expr": "argus_container_memory_rss_bytes",
-          "legendFormat": "{{container_id}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Container Memory Usage",
-      "type": "timeseries"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 9
-      },
-      "id": 13,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.2.0",
-      "targets": [
-        {
-          "expr": "argus_container_network_rx_bytes",
-          "legendFormat": "{{container_id}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Container Network RX",
-      "type": "timeseries"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 9
-      },
-      "id": 14,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.2.0",
-      "targets": [
-        {
-          "expr": "argus_container_uptime_seconds",
-          "legendFormat": "{{container_id}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Container Uptime",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 17
-      },
-      "id": 21,
-      "panels": [],
-      "title": "🖥️ Virtual Machine",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 18
-      },
-      "id": 6,
-      "options": {
-        "minVizHeight": 75,
-        "minVizWidth": 75,
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "sizing": "auto"
-      },
-      "pluginVersion": "12.2.0",
-      "targets": [
-        {
-          "expr": "argus_vm_cpu_pct",
-          "legendFormat": "{{host_id}}",
-          "refId": "A"
-        }
-      ],
-      "title": "VM CPU Usage",
-      "type": "gauge"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "yellow",
-                "value": 6000000
-              },
-              {
-                "color": "red",
-                "value": 7000000
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 18
-      },
-      "id": 7,
-      "options": {
-        "minVizHeight": 75,
-        "minVizWidth": 75,
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "sizing": "auto"
-      },
-      "pluginVersion": "12.2.0",
-      "targets": [
-        {
-          "expr": "argus_vm_memory_rss_bytes",
-          "legendFormat": "{{host_id}}",
-          "refId": "A"
-        }
-      ],
-      "title": "VM Memory Usage",
-      "type": "gauge"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 26
-      },
-      "id": 20,
-      "panels": [],
-      "title": "📦 Application",
-      "type": "row"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 27
-      },
-      "id": 3,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.2.0",
-      "targets": [
-        {
-          "expr": "argus_app_request_rate_rps",
-          "legendFormat": "{{container_id}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Application Request Rate",
-      "type": "timeseries"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "yellow",
-                "value": 5
-              },
-              {
-                "color": "red",
-                "value": 10
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 27
-      },
-      "id": 4,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.2.0",
-      "targets": [
-        {
-          "expr": "argus_app_error_rate_pct",
-          "legendFormat": "{{container_id}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Application Error Rate",
-      "type": "timeseries"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 16,
-        "y": 27
-      },
-      "id": 5,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.2.0",
-      "targets": [
-        {
-          "expr": "histogram_quantile(0.50, sum(rate(argus_app_latency_seconds_bucket[5m])) by (le))",
-          "legendFormat": "p50",
-          "refId": "A"
-        },
-        {
-          "expr": "histogram_quantile(0.95, sum(rate(argus_app_latency_seconds_bucket[5m])) by (le))",
-          "legendFormat": "p95",
-          "refId": "B"
-        },
-        {
-          "expr": "histogram_quantile(0.99, sum(rate(argus_app_latency_seconds_bucket[5m])) by (le))",
-          "legendFormat": "p99",
-          "refId": "C"
-        }
-      ],
-      "title": "Application Latency",
-      "type": "timeseries"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 35
-      },
-      "id": 15,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.2.0",
-      "targets": [
-        {
-          "expr": "rate(argus_app_requests_total[5m])",
-          "legendFormat": "{{container_id}} - Rate",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Application Requests",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 43
-      },
-      "id": 19,
-      "panels": [],
-      "title": "🗂️ Orchestrator",
-      "type": "row"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": 0
-              },
-              {
-                "color": "green",
-                "value": 50
-              },
-              {
-                "color": "yellow",
-                "value": 150
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 12,
-        "x": 0,
-        "y": 44
-      },
-      "id": 8,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "12.2.0",
-      "targets": [
-        {
-          "expr": "argus_orchestrator_pod_count",
-          "legendFormat": "Pods",
-          "refId": "A"
-        }
-      ],
-      "title": "Orchestrator Pod Count",
-      "type": "stat"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "yellow",
-                "value": 500
-              },
-              {
-                "color": "red",
-                "value": 800
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 12,
-        "x": 12,
-        "y": 44
-      },
-      "id": 9,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "12.2.0",
-      "targets": [
-        {
-          "expr": "argus_orchestrator_api_latency_ms",
-          "legendFormat": "API Latency",
-          "refId": "A"
-        }
-      ],
-      "title": "Orchestrator API Latency",
-      "type": "stat"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 49
-      },
-      "id": 18,
-      "panels": [],
-      "title": "🌐 Network",
-      "type": "row"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "bps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 50
-      },
-      "id": 10,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.2.0",
-      "targets": [
-        {
-          "expr": "argus_network_interface_throughput_bps",
-          "legendFormat": "{{host_id}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Network Throughput",
-      "type": "timeseries"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 12,
-        "y": 50
-      },
-      "id": 11,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.2.0",
-      "targets": [
-        {
-          "expr": "argus_network_rtt_ms",
-          "legendFormat": "{{host_id}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Network RTT",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 58
       },
       "id": 17,
       "panels": [],
@@ -1354,7 +105,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 59
+        "y": 1
       },
       "id": 31,
       "options": {
@@ -1393,7 +144,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 67
+        "y": 9
       },
       "id": 32,
       "panels": [],
@@ -1471,7 +222,7 @@
         "h": 6,
         "w": 6,
         "x": 0,
-        "y": 68
+        "y": 10
       },
       "id": 33,
       "options": {
@@ -1573,7 +324,7 @@
         "h": 6,
         "w": 6,
         "x": 6,
-        "y": 68
+        "y": 10
       },
       "id": 34,
       "options": {
@@ -1674,7 +425,7 @@
         "h": 6,
         "w": 6,
         "x": 12,
-        "y": 68
+        "y": 10
       },
       "id": 35,
       "options": {
@@ -1776,7 +527,7 @@
         "h": 6,
         "w": 6,
         "x": 18,
-        "y": 68
+        "y": 10
       },
       "id": 36,
       "options": {
@@ -1872,7 +623,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 74
+        "y": 16
       },
       "id": 53,
       "options": {
@@ -1966,7 +717,7 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 74
+        "y": 16
       },
       "id": 54,
       "options": {
@@ -2060,7 +811,7 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 74
+        "y": 16
       },
       "id": 55,
       "options": {
@@ -2121,7 +872,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 79
+        "y": 21
       },
       "id": 49,
       "options": {
@@ -2160,7 +911,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 85
+        "y": 27
       },
       "id": 38,
       "panels": [],
@@ -2238,7 +989,7 @@
         "h": 6,
         "w": 6,
         "x": 0,
-        "y": 86
+        "y": 28
       },
       "id": 39,
       "options": {
@@ -2340,7 +1091,7 @@
         "h": 6,
         "w": 6,
         "x": 6,
-        "y": 86
+        "y": 28
       },
       "id": 40,
       "options": {
@@ -2441,7 +1192,7 @@
         "h": 6,
         "w": 6,
         "x": 12,
-        "y": 86
+        "y": 28
       },
       "id": 41,
       "options": {
@@ -2543,7 +1294,7 @@
         "h": 6,
         "w": 6,
         "x": 18,
-        "y": 86
+        "y": 28
       },
       "id": 42,
       "options": {
@@ -2639,7 +1390,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 92
+        "y": 34
       },
       "id": 57,
       "options": {
@@ -2733,7 +1484,7 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 92
+        "y": 34
       },
       "id": 58,
       "options": {
@@ -2827,7 +1578,7 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 92
+        "y": 34
       },
       "id": 60,
       "options": {
@@ -2888,7 +1639,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 97
+        "y": 39
       },
       "id": 51,
       "options": {
@@ -2927,7 +1678,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 103
+        "y": 45
       },
       "id": 43,
       "panels": [],
@@ -3005,7 +1756,7 @@
         "h": 6,
         "w": 6,
         "x": 0,
-        "y": 104
+        "y": 46
       },
       "id": 44,
       "options": {
@@ -3107,7 +1858,7 @@
         "h": 6,
         "w": 6,
         "x": 6,
-        "y": 104
+        "y": 46
       },
       "id": 45,
       "options": {
@@ -3208,7 +1959,7 @@
         "h": 6,
         "w": 6,
         "x": 12,
-        "y": 104
+        "y": 46
       },
       "id": 46,
       "options": {
@@ -3310,7 +2061,7 @@
         "h": 6,
         "w": 6,
         "x": 18,
-        "y": 104
+        "y": 46
       },
       "id": 47,
       "options": {
@@ -3406,7 +2157,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 110
+        "y": 52
       },
       "id": 56,
       "options": {
@@ -3500,7 +2251,7 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 110
+        "y": 52
       },
       "id": 59,
       "options": {
@@ -3594,7 +2345,7 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 110
+        "y": 52
       },
       "id": 61,
       "options": {
@@ -3655,7 +2406,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 115
+        "y": 57
       },
       "id": 52,
       "options": {
@@ -3687,27 +2438,207 @@
       ],
       "title": "Early Warning System (1h)",
       "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 63
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "argus_network_interface_throughput_bps",
+          "legendFormat": "{{host_id}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Network Throughput",
+      "type": "timeseries"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 63
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0",
+      "targets": [
+        {
+          "expr": "argus_network_rtt_ms",
+          "legendFormat": "{{host_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Network RTT",
+      "type": "timeseries"
     }
   ],
   "preload": false,
   "refresh": "30s",
   "schemaVersion": 42,
-  "tags": [
-    "argus",
-    "telemetry",
-    "infrastructure",
-    "environmental"
-  ],
+  "tags": [],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "2025-10-23T05:41:06.086Z",
-    "to": "2025-10-23T05:42:24.829Z"
+    "from": "now-5m",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Argus Environmental Telemetry Dashboard",
+  "title": "Argus Dashboard (Environmental Indices)",
   "uid": "argus-telemetry",
-  "version": 13
+  "version": 17
 }
