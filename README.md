@@ -122,4 +122,4 @@ python Agent/argus_agent.py
 - **Last Updated:** October 23
 - Ensure Docker Desktop is **running** before executing any script.
 - For troubleshooting, verify that all services appear as **running** in Docker Desktop.
-- P.S. This configuration should work. If need assistance, please contact markdechavez128@gmail.com
+- P.S. This configuration should work. If assistance is needed, please contact markdechavez128@gmail.com
