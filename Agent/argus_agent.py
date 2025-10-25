@@ -1253,19 +1253,6 @@ def main():
         st.markdown("# Argus Agent")
         st.markdown(f"**Instance ID:** {st.session_state.instance_id}")
         st.markdown("**Location:** Manila")
-        st.markdown("---")
-        st.markdown("### Selected Company Size")
-        st.markdown(f"**{st.session_state.company_type}**")
-        idx = 0 if st.session_state.company_type == "Mid-tier Company" else 1
-        st.session_state.company_type = st.selectbox("Change Company Size (optional):", ["Mid-tier Company", "Large-size Company"], index=idx)
-        st.markdown("---")
-        st.markdown("### Region Metadata")
-        st.markdown(f"**Region:** Manila")
-        st.markdown(f"**WUE (region_wue):** {REGION_META['Manila']['wue']}")
-        st.markdown(f"**Water availability (region_water_avail):** {REGION_META['Manila']['water_avail']}")
-        st.markdown(f"**NO2 factor (region_no2_emission_factor):** {REGION_META['Manila']['no2']}")
-        st.markdown("---")
-        st.markdown("Indices are computed in Prometheus (paste PromQL to Grafana/Prometheus).")
 
         countdown_sidebar = st.empty()
 
@@ -1543,14 +1530,7 @@ def main():
             else:
                 region_placeholder.markdown(f"<div style='margin-top:8px;color:#94a3b8;font-size:12px'>External data not yet fetched</div>", unsafe_allow_html=True)
 
-            with region_placeholder.container():
-                with st.expander("Show raw weather JSON", expanded=False):
-                    st.json(ext_weather)
-                with st.expander("Show raw precipitation data", expanded=False):
-                    st.json(ext_precip)
-                with st.expander("Show raw air quality JSON", expanded=False):
-                    st.json(ext_aq)
-
+           
             # Right column: live feed
             feed_box.markdown("<div style='font-weight:800;margin-bottom:6px;'>Live Feed</div>", unsafe_allow_html=True)
             feed_box.markdown(
